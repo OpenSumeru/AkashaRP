@@ -1,3 +1,8 @@
+#include "Poco/AutoPtr.h"
+#include "Poco/Util/AbstractConfiguration.h"
+#include "Poco/Util/Application.h"
+#include "Poco/Util/OptionSet.h"
+#include "Poco/Util/ServerApplication.h"
 #include "pch.hpp"
 
 class AkashaRPServer : Poco::Util::ServerApplication
