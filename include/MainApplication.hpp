@@ -5,7 +5,7 @@
 #include "Poco/Util/ServerApplication.h"
 #include "pch.hpp"
 
-class AkashaRPServer : Poco::Util::ServerApplication
+class AkashaRPServer : public Poco::Util::ServerApplication
 {
 private:
     std::string configPath;
@@ -16,11 +16,14 @@ private:
     };
     i8 applicationType = Client;
     Poco::AutoPtr<Poco::Util::AbstractConfiguration> config;
+    bool helpRequested = false;
 protected:
     void initialize(Poco::Util::Application& app) override;
     void defineOptions(Poco::Util::OptionSet& options) override;
+    void displayHelp();
     void setConfigPath(const std::string& name, const std::string& value);
     void setApplicationType(const std::string& name, const std::string& value);
+    void setHelpRequest(const std::string& name, const std::string& value);
 public:
     int main(const std::vector<std::string>& args) override;;
 };

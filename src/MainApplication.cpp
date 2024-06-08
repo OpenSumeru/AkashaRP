@@ -1,8 +1,12 @@
 #include "MainApplication.hpp"
 #include "Poco/Util/IniFileConfiguration.h"
+#include "Poco/Util/Option.h"
+#include "Poco/Util/OptionCallback.h"
 #include "Poco/Util/OptionSet.h"
+#include "Poco/Util/HelpFormatter.h"
 #include <print>
 #include <unordered_map>
+#include <iostream>
 #include <vector>
 
 void AkashaRPServer::initialize(Application& app)
@@ -25,12 +29,23 @@ void AkashaRPServer::defineOptions(Poco::Util::OptionSet& options)
         Poco::Util::Option("config","c","Select configure file")
         .required(true)
         .repeatable(false)
-        .callback(Poco::Util::OptionCallback<AkashaRPServer>(this, &AkashaRPServer::setConfigPath))
+        .callback(Poco::Util::OptionCallback<AkashaRPServer>(this,&AkashaRPServer::setConfigPath))
+    );
+    options.addOption
+    (
+        Poco::Util::Option("help","h","Show help window")
+        .required(false)
+        .repeatable(false)
+        .callback(Poco::Util::OptionCallback<AkashaRPServer>(this,&AkashaRPServer::setHelpRequest))
     );
 }
 
 int AkashaRPServer::main(const std::vector<std::string>& args)
 {
+    if (helpRequested) 
+    {
+        return Application::EXIT_OK;
+    }
     
     waitForTerminationRequest();
     
@@ -62,4 +77,20 @@ void AkashaRPServer::setApplicationType(const std::string& name, const std::stri
     {
         std::print("Application type {} not found",value);
     }
+}
+
+void AkashaRPServer::displayHelp()
+{
+    Poco::Util::HelpFormatter helpFormatter(options());
+    helpFormatter.setCommand(commandName());
+    helpFormatter.setUsage("[Options] <Parameters>");
+    helpFormatter.setHeader("Simple Reverse Proxy Client and Server");
+    helpFormatter.format(std::cout);
+}
+
+void AkashaRPServer::setHelpRequest(const std::string& name, const std::string& value)
+{
+    helpRequested = true;
+    displayHelp();
+    stopOptionsProcessing();
 }

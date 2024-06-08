@@ -3,6 +3,7 @@
 
 int main(int argc, char** argv) 
 {
+    AkashaRPServer app;
     
-    return 0;
+    return app.run(argc,argv);
 }
